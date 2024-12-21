@@ -23,19 +23,18 @@ console.log(getComputerChoice())
 
 // Human choice of Rock or Paper or Scissor
 let gethumanChoice =function(){
-    humanVal = parseInt(prompt ("Type either 1 for Rock, 2 for Paper or 3 for Scissor: "));
-    if (humanVal === 1){
+    humanVal = prompt ("Type either Rock, Paper or Scissor (case insenstive): ");
+    humanVal = humanVal.slice(0,1).toUpperCase() + humanVal.slice(1).toLowerCase();
+    if (humanVal === "Rock"){
         return "Rock"
-    } else if(humanVal === 2){
+    } else if(humanVal === "Paper"){
         return "Paper"
-    } else if (humanVal === 3){
+    } else if (humanVal === "Scissor"){
         return "Scissor";
     }else{
         return gethumanChoice();
     }
 }
 console.log(gethumanChoice())
-// function getHUmanChoice(){
 
-// }
 
