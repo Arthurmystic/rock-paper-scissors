@@ -20,5 +20,16 @@ console.log(getComputerChoice())
 //     }
 // }
 
+let humanChoice =function(){
+    humanVal = parseInt(prompt ("Type either 1 for Rock, 2 for Paper or 3 for Scissor: "))
+    if (humanVal === 1 || humanVal === 2 || humanVal === 3){
+        // Do nothing 
+    }else{
+        humanChoice()
+    }
+}
+//humanChoice()
+// function getHUmanChoice(){
 
+// }
 
