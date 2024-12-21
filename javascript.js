@@ -1,5 +1,7 @@
 console.log("Hello World!")
 
+
+// Computer choice of Rock or Paper or Scissor
 randNum = Math.random() * 10;
 let getComputerChoice = () => randNum < 3 ?
     "Rock" :
@@ -7,7 +9,6 @@ let getComputerChoice = () => randNum < 3 ?
         "Paper" :
         "Scissor"
 console.log(getComputerChoice())
-
 
 // function getComputerChoice() {
 //     randNum = Math.random() * 10;
@@ -20,15 +21,20 @@ console.log(getComputerChoice())
 //     }
 // }
 
-let humanChoice =function(){
-    humanVal = parseInt(prompt ("Type either 1 for Rock, 2 for Paper or 3 for Scissor: "))
-    if (humanVal === 1 || humanVal === 2 || humanVal === 3){
-        // Do nothing 
+// Human choice of Rock or Paper or Scissor
+let gethumanChoice =function(){
+    humanVal = parseInt(prompt ("Type either 1 for Rock, 2 for Paper or 3 for Scissor: "));
+    if (humanVal === 1){
+        return "Rock"
+    } else if(humanVal === 2){
+        return "Paper"
+    } else if (humanVal === 3){
+        return "Scissor";
     }else{
-        humanChoice()
+        return gethumanChoice();
     }
 }
-//humanChoice()
+console.log(gethumanChoice())
 // function getHUmanChoice(){
 
 // }
