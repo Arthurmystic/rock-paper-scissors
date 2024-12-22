@@ -40,13 +40,17 @@ let gethumanChoice =function(){
 // Declare player's score
 let humanScore = 0;
 let computerScore = 0; 
+let noDraws = 0;
 
 let playRound = function (humanChoice, computerChoice){
     if (humanChoice == "Rock" && computerChoice == "Rock"){
-        return "It's a draw! Both rock.";
+        noDraws += 1;
+        return "It's a draw! Both Rock.";
     }else if (humanChoice == "Paper" && computerChoice == "Paper"){
+        noDraws += 1;
         return "It's a draw! Both Paper.";
     }else if (humanChoice == "Scissor" && computerChoice == "Scissor"){
+        noDraws += 1;
         return "It's a draw! Both Scissor."
     }else if (humanChoice == "Paper" && computerChoice == "Rock"){
         humanScore +=1;
@@ -69,61 +73,16 @@ let playRound = function (humanChoice, computerChoice){
     } 
 }
 
+// console.log(playRound(gethumanChoice(), getComputerChoice()))
+let playGame = function (){
+    for (let round =1; round <=5; round++){
+        //getComputerChoice();
+        //gethumanChoice();
+        result = playRound(gethumanChoice(), getComputerChoice());
+        console.log (`Round: ${round} | Result: ${result}`);
+    }
+    console.log(" ")
+    console.log(`Your final score: ${humanScore}  |  Computers final score: ${computerScore} | Draws: ${noDraws}`);
+}
 
-// let playRound = function (humanChoice, computerChoice){
-//     const choices = {
-//         bothRock: () => humanChoice == "Rock" && computerChoice == "Rock",
-//         bothPaper: () => humanChoice == "Paper" && computerChoice == "Paper",
-//         bothScissor: () => humanChoice == "Scissor" && computerChoice == "Scissor",
-       
-//         PaperRock: () => humanChoice == "Paper" && computerChoice == "Rock",
-//         RockPaper: () => humanChoice == "Rock" && computerChoice == "Paper",
-       
-//         ScissorRock: () => humanChoice == "Scissor" && computerChoice == "Rock",
-//         RockScissor: () => humanChoice == "Rock" && computerChoice == "Scissor",
-        
-//         PaperScissor: () => humanChoice == "Paper" && computerChoice == "Scissor",
-//         ScissorPaper: () => humanChoice == "Scissor" && computerChoice == "Paper"
-//     }
-    
-//     switch (choices){
-//         case choices.bothRock():
-//             return "It's a draw! Both rock."
-//             break;
-//         case choices.bothPaper():
-//             return "It's a draw! Both Paper."
-//             break;
-//         case choices.bothScissor():
-//             return "It's a draw! Both Scissor."
-//             break;
-//         case choices.PaperRock():
-//             humanScore +=1;
-//             return "You win! Paper beats Rock."
-//             break;
-//         case choices.RockPaper():
-//             computerScore += 1;
-//             return "You lose! Paper beats Rock."
-//             break;
-//         case choices.ScissorRock():
-//             computerScore += 1;
-//             return "You lose! Rock beats Scissor"
-//             break;
-//         case choices.RockScissor():
-//             humanScore += 1;
-//             return "You win! Rock beats Scissor."
-//             break;
-//         case choices.PaperScissor():
-//             computerScore += 1;
-//             return "You lose! Scissor beats Paper."
-//             break;
-//         case choices.ScissorPaper():
-//             humanScore += 1;
-//             return "You win! Scissor beats Paper."
-//             break;
-        
-//     }
-
-// }
-
-// playRound(gethumanChoice(), getComputerChoice())
-console.log(playRound(gethumanChoice(), getComputerChoice()))
+playGame();
