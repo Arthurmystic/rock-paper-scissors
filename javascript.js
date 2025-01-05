@@ -74,7 +74,7 @@ let playRound = function (humanChoice, computerChoice){
 }
 
 // console.log(playRound(gethumanChoice(), getComputerChoice()))
-let playGame = function (){
+/*let playGame = function (){
     for (let round =1; round <=5; round++){
         //getComputerChoice();
         //gethumanChoice();
@@ -83,6 +83,6 @@ let playGame = function (){
     }
     console.log(" ")
     console.log(`Your final score: ${humanScore}  |  Computers final score: ${computerScore} | Draws: ${noDraws}`);
-}
+}*/
 
 playGame();
