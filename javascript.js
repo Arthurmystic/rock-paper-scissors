@@ -2,166 +2,155 @@ console.log("Hello World!");
 
 // CORE LOGIC AND UTILITIES
 
-// Function to get the computer's choice (Rock, Paper, or Scissor) randomly.
-let getComputerChoice = function () {
-    randNum = Math.ceil(Math.random() * 3); // Generates a random number between 1 and 3
-    if (randNum == 1) return "Rock";
-    if (randNum == 2) return "Paper";
-    if (randNum == 3) return "Scissor";
-}
+// Array of possible choices for the game
+const choices = ['Rock', 'Paper', 'Scissor'];
 
-// Declare player's score and other game-related variables
-let humanScore = 0;  // Human player's score
-let computerScore = 0;  // Computer's score
-let noDraws = 0;  // Count of draws
-let round = 1;  // Track the current round number
+// Object containing inline styles for buttons
+let buttonStyles = {
+    Rock: `
+        background-color: #FF6F00;
+        border-color: #E65100;
+        color: #FFFFFF;
+        border-radius: 0.5em;
+        width:6em;
+        height:2em;
+        font-size: 16px;
+        `,
+    Paper: `
+        background-color: #00E5FF;
+        border-color: #009688;
+        color: #004D40;
+        border-radius: 0.5em;
+        width:6em;
+        height:2em;
+        font-size: 16px;
+        `,
+    Scissor: `
+        background-color: #FF1744;
+        border-color: #D50000;
+        color: #FFFFFF;
+        border-radius: 0.5em;
+        width:6em;
+        height:2em;
+        font-size: 16px;
+        `,
+};
 
-// Function to play a round of the game
+// Object to track the current game state (scores and draws)
+let gameState = {
+    humanScore: 0,
+    computerScore: 0,
+    noDraws: 0,
+};
+
+// Function to randomly select the computer's choice from the `choices` array
+let getComputerChoice = function (choices) {
+    return choices[Math.floor(Math.random() * 3)];
+};
+
+// Object defining possible outcomes for each combination of choices
+let outcomes = {
+    Rock: { Rock: "draw", Paper: "lose", Scissor: "win" },
+    Paper: { Rock: "win", Paper: "draw", Scissor: "lose" },
+    Scissor: { Rock: "lose", Paper: "win", Scissor: "draw" },
+};
+
+// Function to play a single round based on the human and computer choices
 let playRound = function (humanChoice, computerChoice) {
-    // Handle different outcomes of the round based on the choices made
-    if (humanChoice == "Rock" && computerChoice == "Rock") {
-        noDraws += 1;  // Increment draw count
-        spanResults.textContent = "It's a draw! Both Rock.";  // Display result
-    } else if (humanChoice == "Paper" && computerChoice == "Paper") {
-        noDraws += 1;
-        spanResults.textContent = "It's a draw! Both Paper.";
-    } else if (humanChoice == "Scissor" && computerChoice == "Scissor") {
-        noDraws += 1;
-        spanResults.textContent = "It's a draw! Both Scissor.";
-    } else if (humanChoice == "Paper" && computerChoice == "Rock") {
-        humanScore += 1;  // Increment human's score
-        spanResults.textContent = "You win! Paper beats Rock.";
-    } else if (humanChoice == "Rock" && computerChoice == "Paper") {
-        computerScore += 1;  // Increment computer's score
-        spanResults.textContent = "You lose! Paper beats Rock.";
-    } else if (humanChoice == "Scissor" && computerChoice == "Rock") {
-        computerScore += 1;
-        spanResults.textContent = "You lose! Rock beats Scissor.";
-    } else if (humanChoice == "Rock" && computerChoice == "Scissor") {
-        humanScore += 1;
-        spanResults.textContent = "You win! Rock beats Scissor.";
-    } else if (humanChoice == "Paper" && computerChoice == "Scissor") {
-        computerScore += 1;
-        spanResults.textContent = "You lose! Scissor beats Paper.";
-    } else if (humanChoice == "Scissor" && computerChoice == "Paper") {
-        humanScore += 1;
-        spanResults.textContent = "You win! Scissor beats Paper.";
+    let result = outcomes[humanChoice][computerChoice]; // Determine round result
+    if (result === "win") {
+        gameState.humanScore++; // Increment human score on win
+        spanResults.textContent = `You win! ${humanChoice} beats ${computerChoice}.`;
+    } else if (result === "lose") {
+        gameState.computerScore++; // Increment computer score on loss
+        spanResults.textContent = `You lose! ${computerChoice} beats ${humanChoice}.`;
+    } else {
+        gameState.noDraws++; // Increment draws on tie
+        spanResults.textContent = `It's a draw! Both chose ${humanChoice}.`;
     }
-
-    // Check if either player has reached a score of 5 to end the game
-    if (humanScore == 5 || computerScore == 5) {
-        let results = humanScore > computerScore ? "YOU WIN!"
-            : (humanScore < computerScore) ? "YOU LOSE!"
-                : "DRAW!";
-
-        // Display the final results and scores
-        paraFinalResults.innerHTML = `  <br>
-        Your score: ${humanScore} | Comp score: ${computerScore} | Draws: ${noDraws} <br>
-                             ${results} <br>
-                Game Over! Refresh to Play again`;
-
-        divButtons.removeEventListener('click', playGame); // Remove the event listener to stop the game
+    // Check if the game has ended (score reaches 5)
+    if (gameState.humanScore == 5 || gameState.computerScore == 5) {
+        endGame();
     }
-    round += 1;  // Increment the round counter
+};
+
+// Function to end the game and display final results
+function endGame() {
+    let finalMessage = gameState.humanScore > gameState.computerScore ? "YOU WIN!"
+        : (gameState.humanScore < gameState.computerScore) ? "YOU LOSE!"
+            : "DRAW!";
+    // Display final results and disable further interactions
+    paraFinalResults.innerHTML = `
+        <br>
+        Your score: ${gameState.humanScore} | Comp score: ${gameState.computerScore} | Draws: ${gameState.noDraws} <br>
+        ${finalMessage} <br>
+        Game Over! Refresh to Play again`;
+    divButtons.removeEventListener('click', playGame); // Stop listening for clicks
 }
 
-// Declare humanChoice variable as global
+// Global variable to store the human's choice for the round
 let humanChoice;
 
-// Function to handle the game flow when a button is clicked
+// Function to handle button clicks and trigger a round
 let playGame = function (e) {
-    humanChoice = e.target.textContent; // Get human's choice based on the clicked button text
-    playRound(humanChoice, getComputerChoice());  // Pass choices to play the round
-}
+    if (e.target.classList.contains('btn')) { // Ensure a valid button was clicked
+        humanChoice = e.target.dataset.choice; // Get choice from data-attribute
+        playRound(humanChoice, getComputerChoice(choices)); // Start the round
+    }
+};
 
 // DOM CREATION
 
-// Create and append the container div for buttons
+// Create a container for buttons and append it to the document
 const divButtons = document.createElement('div');
 document.body.appendChild(divButtons);
 
-// Create buttons for Rock, Paper, and Scissors
-const rockButton = document.createElement('button');
-const paperButton = document.createElement('button');
-const scissorButton = document.createElement('button');
+// Dynamically create buttons for each choice, assign styles, and append to the container
+choices.forEach(choice => {
+    let button = document.createElement('button'); // Create button
+    button.setAttribute('class', 'btn');        // Add button class
+    button.setAttribute('data-choice', choice); // Assign data-attribute
+    button.textContent = choice;              // Set button label
+    button.style.cssText = buttonStyles[choice]; // Apply inline styles
+    divButtons.appendChild(button);          // Append button to container
+});
 
-rockButton.setAttribute('class', 'btn');
-paperButton.setAttribute('class', 'btn');
-scissorButton.setAttribute('class', 'btn');
-
-// Create and append a paragraph element to display text
+// Create a paragraph to display informational text and append to the document
 const para = document.createElement('p');
 document.body.appendChild(para);
 
-// Create and append a div for displaying the round results
+// Create a div for displaying round results and append it to the document
 const divDisplayResults = document.createElement('div');
-const spanResults = document.createElement('span');
+const spanResults = document.createElement('span'); // Span to update round results
 divDisplayResults.appendChild(spanResults);
 document.body.appendChild(divDisplayResults);
 
-// Create and append a paragraph element to display final results
+// Create a paragraph to display final results and append it to the document
 const paraFinalResults = document.createElement('p');
 document.body.appendChild(paraFinalResults);
 
-// Set the text for the buttons
-rockButton.textContent = 'Rock';
-paperButton.textContent = 'Paper';
-scissorButton.textContent = 'Scissor';
-
-// Append the buttons to the divButtons container
-divButtons.appendChild(rockButton);
-divButtons.appendChild(paperButton);
-divButtons.appendChild(scissorButton);
-
 // STYLING
 
-// Apply CSS styling to the divButtons container (buttons layout)
+// Style the buttons container (horizontal layout with spacing)
 divButtons.style.cssText = `
-                display: flex;
-                gap: 5rem;
-                `;
+    display: flex;
+    gap: 10rem;
+    justify-content: center;
+    `;
 
-// Apply CSS styling to each button
-rockButton.style.cssText = `
-                background-color: #FF6F00;
-                border-color: #E65100;
-                color: #FFFFFF;
-                border-radius: 0.5em;
-                width:6em;
-                height:2em;
-                font-size: 16px;
-                `;
-paperButton.style.cssText = `
-                background-color: #00E5FF;
-                border-color: #009688;
-                color: #004D40;
-                border-radius: 0.5em;
-                width:6em;
-                height:2em;
-                font-size: 16px;
-                `;
-scissorButton.style.cssText = `
-                background-color: #FF1744;
-                border-color: #D50000;
-                color: #FFFFFF;
-                border-radius: 0.5em;
-                width:6em;
-                height:2em;
-                font-size: 16px;
-                `;
-
-// Style for displaying the final result (center alignment)
+// Center align final results
 paraFinalResults.style.cssText = `
     text-align:center;
+    margin-top: 0.1rem;
+    `;
+
+// Center align round results
+divDisplayResults.style.cssText = `
+    text-align:center;
+    margin-top: 1rem;
     `;
 
 // EVENT LISTENERS
 
-// Add an event listener to the divButtons container to start the game
+// Add event listener to buttons container to handle game logic
 divButtons.addEventListener('click', playGame);
-
-// divButtons.addEventListener('mouseover', (e) => {
-//     if (e.target.className == 'btn'){
-//         e.target.style.background = 'lightgreen';
-//     }
-// });
